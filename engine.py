@@ -5,7 +5,6 @@ from datetime import datetime
 log_dir = "log/"
 
 engine_count = 0
-now = datetime.now()
 
 class Engine(object):
   def __init__(self):
@@ -19,8 +18,8 @@ class Engine(object):
     engine_count += 1
 
   def create_log(self):
-    global now
     global log_dir
+    now = datetime.now()
     time_mark = "{:04}{:02}{:02}-{:02}{:02}{:02}".format(
       now.year, now.month, now.day, now.hour, now.minute, now.second)
     log_name = log_dir + time_mark + "-{}.log".format(self.no)
