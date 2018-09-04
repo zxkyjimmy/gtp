@@ -128,7 +128,7 @@ class Arena(object):
       if move == PASS:
         pass_count += 1
       else:
-        white.play("W", move)
+        white.play("B", move)
         white.showboard()
         pass_count = 0
       if pass_count >= 2:
@@ -140,7 +140,7 @@ class Arena(object):
       if move == PASS:
         pass_count += 1
       else:
-        black.play("B", move)
+        black.play("W", move)
         black.showboard()
         pass_count = 0
       if pass_count >= 2:
