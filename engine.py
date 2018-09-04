@@ -70,7 +70,7 @@ class Engine(object):
 
   def genmove(self, color):
     data = self.send("genmove {}\n".format(color))
-    assert data == "="
+    assert data[0] == "="
     return data[1:].strip()
 
   def play(self, color, vertex):
@@ -122,22 +122,26 @@ class Arena(object):
     pass_count = 0
     while True:
       move = black.genmove("B")
+      black.showboard()
       if move == RESIGN:
         break
       if move == PASS:
         pass_count += 1
       else:
         white.play("W", move)
+        white.showboard()
         pass_count = 0
       if pass_count >= 2:
         break
       move = white.genmove("W")
+      white.showboard()
       if move == RESIGN:
         break
       if move == PASS:
         pass_count += 1
       else:
         black.play("B", move)
+        black.showboard()
         pass_count = 0
       if pass_count >= 2:
         break
