@@ -68,7 +68,9 @@ class Engine(object):
     return self.send("komi {}\n".format(komi))
 
   def genmove(self, color):
-    return self.send("genmove {}\n".format(color))
+    data = self.send("genmove {}\n".format(color))
+    assert data == "="
+    return data[1:].strip()
 
   def play(self, color, vertex):
     return self.send("play {} {}\n".format(color, vertex))
@@ -79,3 +81,64 @@ class Engine(object):
   def list_commands(self):
     return self.send("list_commands\n")
 
+
+class Arena(object):
+  def __init__(self, player1, player2):
+    self.player1 = player1
+    self.player2 = player2
+  
+  def duel(self, num):
+    p1_count = 0
+    p2_count = 0
+    for i in range(num):
+      if i % 2 == 0:
+        result = self.one_game(player1, player2)
+        if (result > 0):
+          p1_count += 1
+        elif (result < 0):
+          p2_count += 1
+      else:
+        result = self.one_game(player2, player1)
+        if (result > 0):
+          p2_count += 1
+        elif (result < 0):
+          p1_count += 1
+      print(i, p1_count, p2_count)
+
+  def one_game(self, black, white):
+    RESIGN = "resign"
+    PASS = "pass"
+    black.launch()
+    white.launch()
+    pass_count = 0
+    while True:
+      move = black.genmove("B")
+      if move == RESIGN:
+        break
+      if move == PASS:
+        pass_count += 1
+      else:
+        white.play("W", move)
+        pass_count = 0
+      if pass_count >= 2:
+        break
+      move = black.genmove("W")
+      if move == RESIGN:
+        break
+      if move == PASS:
+        pass_count += 1
+      else:
+        white.play("B", move)
+        pass_count = 0
+      if pass_count >= 2:
+        break
+    score = black.final_score()
+    black.close()
+    white.close()
+    assert score[0] == "="
+    winner = score[1:].strip()[0]
+    if (winner == "B"):
+      return 1
+    if (winner == "W"):
+      return -1
+    return 0
