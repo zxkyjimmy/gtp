@@ -9,7 +9,8 @@ now = datetime.now()
 
 class Engine(object):
   def __init__(self):
-    self.cwd = "../leela-zero"
+    self.env = None
+    self.cwd = None
     self.args = ["./play.sh", "0"]
     self.log = None
     self.process = None
@@ -80,12 +81,16 @@ class Engine(object):
 
   def list_commands(self):
     return self.send("list_commands\n")
+  
+  def loadsgf(self, filename):
+    return self.send("loadsgf {}\n".format(filename))
 
 
 class Arena(object):
-  def __init__(self, player1, player2):
+  def __init__(self, player1, player2, sgffilename=None):
     self.player1 = player1
     self.player2 = player2
+    self.filename = sgffilename
   
   def duel(self, num):
     p1_count = 0
@@ -110,6 +115,10 @@ class Arena(object):
     PASS = "pass"
     black.launch()
     white.launch()
+    if self.filename:
+      black.loadsgf(self.filename)
+      white.loadsgf(self.filename)
+
     pass_count = 0
     while True:
       move = black.genmove("B")
@@ -132,6 +141,8 @@ class Arena(object):
         pass_count = 0
       if pass_count >= 2:
         break
+    black.send("printsgf\n")
+    white.send("printsgf\n")
     score = black.final_score()
     black.close()
     white.close()
