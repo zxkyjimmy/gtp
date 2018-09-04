@@ -120,10 +120,12 @@ class Arena(object):
       white.loadsgf(self.filename)
 
     pass_count = 0
+    result = 0
     while True:
       move = black.genmove("B")
       black.showboard()
       if move == RESIGN:
+        result = -1
         break
       if move == PASS:
         pass_count += 1
@@ -136,6 +138,7 @@ class Arena(object):
       move = white.genmove("W")
       white.showboard()
       if move == RESIGN:
+        result = 1
         break
       if move == PASS:
         pass_count += 1
@@ -145,15 +148,20 @@ class Arena(object):
         pass_count = 0
       if pass_count >= 2:
         break
+
     black.send("printsgf\n")
     white.send("printsgf\n")
-    score = black.final_score()
+    score = black.score()
     black.close()
     white.close()
-    assert score[0] == "="
-    winner = score[1:].strip()[0]
-    if (winner == "B"):
-      return 1
-    if (winner == "W"):
-      return -1
-    return 0
+
+    if pass_count >= 2:
+      assert score[0] == "="
+      winner = score[1:].strip()[0]
+      if (winner == "B"):
+        return 1
+      if (winner == "W"):
+        return -1
+      return 0
+    else:
+      return result
