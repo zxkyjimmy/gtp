@@ -29,7 +29,7 @@ class Engine(object):
   def launch(self):
     if self.log == None:
       self.log = self.create_log()
-    self.process = Popen(self.args, stdin=PIPE, stdout=PIPE, stderr=self.log, cwd=self.cwd)
+    self.process = Popen(self.args, stdin=PIPE, stdout=PIPE, stderr=self.log, cwd=self.cwd, env=self.env)
 
   def send(self, data):
     self.process.stdin.write(data.encode())
@@ -97,13 +97,13 @@ class Arena(object):
     p2_count = 0
     for i in range(num):
       if i % 2 == 0:
-        result = self.one_game(player1, player2)
+        result = self.one_game(self.player1, self.player2)
         if (result > 0):
           p1_count += 1
         elif (result < 0):
           p2_count += 1
       else:
-        result = self.one_game(player2, player1)
+        result = self.one_game(self.player2, self.player1)
         if (result > 0):
           p2_count += 1
         elif (result < 0):
@@ -131,13 +131,13 @@ class Arena(object):
         pass_count = 0
       if pass_count >= 2:
         break
-      move = black.genmove("W")
+      move = white.genmove("W")
       if move == RESIGN:
         break
       if move == PASS:
         pass_count += 1
       else:
-        white.play("B", move)
+        black.play("B", move)
         pass_count = 0
       if pass_count >= 2:
         break
