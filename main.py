@@ -14,7 +14,7 @@ p1.args = ["./scripts/start.sh", "etc/mcts_1gpu_notensorrt.conf"]
 p2_env = os.environ.copy()
 p2_env["CUDA_VISIBLE_DEVICES"] = "1"
 p2.env = p2_env
-p1.cwd = "/home/jimmy/Documents/phoenixgo-ewin"
+p2.cwd = "/home/jimmy/Documents/phoenixgo-ewin"
 p2.args = ["./scripts/start.sh", "etc/mcts_1gpu_notensorrt.conf"]
 
 arena = Arena(p1, p2)
