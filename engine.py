@@ -107,7 +107,7 @@ class Arena(object):
           p2_count += 1
         elif (result < 0):
           p1_count += 1
-      print(i, p1_count, p2_count)
+      print(i+1, p1_count, p2_count, "p2 winrate:", p2_count/(i+1))
 
   def one_game(self, black, white):
     RESIGN = "resign"
@@ -122,45 +122,29 @@ class Arena(object):
     result = 0
     while True:
       move = black.genmove("B")
-      black.showboard()
+      white.play("B", move)
       if move == RESIGN:
         result = -1
         break
       if move == PASS:
         pass_count += 1
       else:
-        white.play("B", move)
-        white.showboard()
         pass_count = 0
       if pass_count >= 2:
         break
       move = white.genmove("W")
-      white.showboard()
+      black.play("W", move)
       if move == RESIGN:
         result = 1
         break
       if move == PASS:
         pass_count += 1
       else:
-        black.play("W", move)
-        black.showboard()
         pass_count = 0
       if pass_count >= 2:
         break
 
-    black.send("printsgf\n")
-    white.send("printsgf\n")
-    score = black.score()
     black.close()
     white.close()
 
-    if pass_count >= 2:
-      assert score[0] == "="
-      winner = score[1:].strip()[0]
-      if (winner == "B"):
-        return 1
-      if (winner == "W"):
-        return -1
-      return 0
-    else:
-      return result
+    return result
