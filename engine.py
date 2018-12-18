@@ -107,7 +107,7 @@ class Arena(object):
           p2_count += 1
         elif (result < 0):
           p1_count += 1
-      print(i+1, p1_count, p2_count, "p2 winrate:", p2_count/(i+1))
+      print(i+1, p1_count, p2_count, "p1 winrate:", p1_count/(i+1))
 
   def one_game(self, black, white):
     RESIGN = "resign"
