@@ -34,12 +34,13 @@ class Engine(object):
     self.process.stdin.write(data.encode())
     self.process.stdin.flush()
     result = ""
+    res = ""
     while True:
       res = self.process.stdout.readline().decode()
-      if not res.strip():
+      if res[0] == "=":
         break
       result += res
-    return result
+    return res
 
   def quit(self):
     return self.send("quit\n")
@@ -122,7 +123,6 @@ class Arena(object):
     result = 0
     while True:
       move = black.genmove("B")
-      black.showboard()
       white.play("B", move)
       if move == RESIGN:
         result = -1
@@ -134,7 +134,6 @@ class Arena(object):
       if pass_count >= 2:
         break
       move = white.genmove("W")
-      white.showboard()
       black.play("W", move)
       if move == RESIGN:
         result = 1
