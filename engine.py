@@ -111,8 +111,8 @@ class Arena(object):
       print(i+1, p1_count, p2_count, "p1 winrate:", p1_count/(i+1))
 
   def one_game(self, black, white):
-    RESIGN = "resign"
-    PASS = "pass"
+    RESIGN = "RESIGN"
+    PASS = "PASS"
     black.launch()
     white.launch()
     if self.filename:
