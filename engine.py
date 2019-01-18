@@ -65,13 +65,16 @@ class Engine(object):
     return self.get()
 
   def clearboard(self):
-    return self.send("clear_board\n")
+    self.send("clear_board\n")
+    return self.get()
 
   def boardsize(self, size):
-    return self.send("boardsize {}\n".format(size))
+    self.send("boardsize {}\n".format(size))
+    return self.get()
 
   def komi(self, komi):
-    return self.send("komi {}\n".format(komi))
+    self.send("komi {}\n".format(komi))
+    return self.get()
 
   def genmove(self, color):
     self.send("genmove {}\n".format(color))
