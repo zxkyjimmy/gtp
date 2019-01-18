@@ -33,6 +33,8 @@ class Engine(object):
   def send(self, data):
     self.process.stdin.write(data.encode())
     self.process.stdin.flush()
+
+  def get(self):
     result = ""
     res = ""
     while True:
@@ -40,10 +42,10 @@ class Engine(object):
       if res[0] == "=":
         break
       result += res
-    return res
+    return res[1:].strip()
 
   def quit(self):
-    return self.send("quit\n")
+    self.send("quit\n")
   
   def close(self):
     self.quit()
@@ -51,13 +53,16 @@ class Engine(object):
     self.log = None
 
   def name(self):
-    return self.send("name\n")
+    self.send("name\n")
+    return self.get()
 
   def version(self):
-    return self.send("version\n")
+    self.send("version\n")
+    return self.get()
 
   def showboard(self):
-    return self.send("showboard\n")
+    self.send("showboard\n")
+    return self.get()
 
   def clearboard(self):
     return self.send("clear_board\n")
@@ -69,21 +74,24 @@ class Engine(object):
     return self.send("komi {}\n".format(komi))
 
   def genmove(self, color):
-    data = self.send("genmove {}\n".format(color))
-    assert data[0] == "="
-    return data[1:].strip()
+    self.send("genmove {}\n".format(color))
+    return self.get().upper()
 
   def play(self, color, vertex):
-    return self.send("play {} {}\n".format(color, vertex))
+    self.send("play {} {}\n".format(color, vertex))
+    return self.get()
 
   def score(self):
-    return self.send("final_score\n")
+    self.send("final_score\n")
+    return self.get()
 
   def list_commands(self):
-    return self.send("list_commands\n")
+    self.send("list_commands\n")
+    return self.get()
   
   def loadsgf(self, filename):
-    return self.send("loadsgf {}\n".format(filename))
+    self.send("loadsgf {}\n".format(filename))
+    return self.get()
 
 
 class Arena(object):
@@ -144,6 +152,14 @@ class Arena(object):
         pass_count = 0
       if pass_count >= 2:
         break
+
+    if pass_count >= 2:
+      score = black.final_score().upper()
+      winner = score[0]
+      if winner == "B":
+        result = 1
+      else:
+        result = -1
 
     black.close()
     white.close()
